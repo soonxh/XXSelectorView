@@ -12,8 +12,7 @@
 
 @property (nonatomic,strong) UIButton *currentSortButton;
 @property (nonatomic,strong) UIView *lineView;
-
-@property (nonatomic,assign) CGFloat width;
+@property (nonatomic,assign) CGFloat itemWidth;
 
 
 @end
@@ -31,6 +30,19 @@
 
 - (void)setSelectorArray:(NSArray *)selectorArray {
 
+}
+
+- (void)setSelectedIndex:(NSInteger)selectedIndex {
+    for (UIView *subview in self.subviews) {
+        if ([[subview class] isEqual:[UIButton class]]) {
+            UIButton *button = (UIButton *)subview;
+            if (button.tag == selectedIndex) {
+                [self buttonClick:button];
+            } else {
+
+            }
+        }
+    }
 }
 
 - (void)setNormalColor:(UIColor *)normalColor {
@@ -72,14 +84,14 @@
 - (void)configUIWithArray:(NSArray *)selectorArray {
     
     CGFloat width = self.frame.size.width / selectorArray.count;
-    _width = width;
+    _itemWidth = width;
     
     self.lineView = [[UIView alloc]init];
 
     NSInteger num = 0;
     for (NSString *title in selectorArray) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(num * self.width, 0, self.width, self.frame.size.height);
+        button.frame = CGRectMake(num * self.itemWidth, 0, self.itemWidth, self.frame.size.height);
         button.tag = num;
         [button setTitle:title forState:UIControlStateNormal];
         [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -88,7 +100,7 @@
         if (0 == num) {
             button.selected = YES;
             self.currentSortButton = button;
-            self.lineView.frame = CGRectMake(0, self.frame.size.height - 2, self.width, 2);
+            self.lineView.frame = CGRectMake(0, self.frame.size.height - 2, self.itemWidth, 2);
         }
         
         num ++;
@@ -107,7 +119,7 @@
     self.currentSortButton.userInteractionEnabled = NO;
     
     [UIView animateWithDuration:0.2 animations:^{
-        _lineView.frame = CGRectMake(self.currentSortButton.tag * _width, self.frame.size.height - 2, _width, 2);
+        _lineView.frame = CGRectMake(self.currentSortButton.tag * _itemWidth, self.frame.size.height - 2, _itemWidth, 2);
     }];
 
     if (self.XXSelectorViewBlcok) {

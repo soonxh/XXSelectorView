@@ -20,7 +20,10 @@
 @property (nonatomic,strong) UIColor *lineViewColor;
 //按钮的背景色
 @property (nonatomic,strong) UIColor *buttonColor;
-
+/**
+ 当前选中
+ */
+@property (nonatomic,assign) NSInteger selectedIndex;
 //回调当前选中的按钮
 @property (nonatomic,copy) void (^XXSelectorViewBlcok) (NSInteger tag);
 
