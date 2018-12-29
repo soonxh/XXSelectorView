@@ -37,9 +37,19 @@
         if ([[subview class] isEqual:[UIButton class]]) {
             UIButton *button = (UIButton *)subview;
             if (button.tag == selectedIndex) {
-                [self buttonClick:button];
+                if (button != self.currentSortButton) {
+                    self.currentSortButton.selected = NO;
+                    self.currentSortButton.userInteractionEnabled = YES;
+                    self.currentSortButton = button;
+                }
+                self.currentSortButton.selected = YES;
+                self.currentSortButton.userInteractionEnabled = NO;
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    _lineView.frame = CGRectMake(self.currentSortButton.tag* _itemWidth, self.frame.size.height - 2, _itemWidth, 2);
+                }];
             } else {
-
+                button.selected = NO;
             }
         }
     }
@@ -97,11 +107,11 @@
         [button addTarget:self action:@selector(buttonClick:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
         
-        if (0 == num) {
-            button.selected = YES;
-            self.currentSortButton = button;
-            self.lineView.frame = CGRectMake(0, self.frame.size.height - 2, self.itemWidth, 2);
-        }
+//        if (0 == num) {
+//            button.selected = YES;
+//            self.currentSortButton = button;
+//            self.lineView.frame = CGRectMake(0, self.frame.size.height - 2, self.itemWidth, 2);
+//        }
         
         num ++;
     }
@@ -119,7 +129,7 @@
     self.currentSortButton.userInteractionEnabled = NO;
     
     [UIView animateWithDuration:0.2 animations:^{
-        _lineView.frame = CGRectMake(self.currentSortButton.tag * _itemWidth, self.frame.size.height - 2, _itemWidth, 2);
+        _lineView.frame = CGRectMake(self.currentSortButton.tag* _itemWidth, self.frame.size.height - 2, _itemWidth, 2);
     }];
 
     if (self.XXSelectorViewBlcok) {

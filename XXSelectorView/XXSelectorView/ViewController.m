@@ -28,6 +28,10 @@
     [self.selectorDataArray addObjectsFromArray:@[@"1",@"2",@"3"]];
     self.title = self.selectorDataArray.firstObject;
     
+    [self.view addSubview:self.selectorView];
+    [self.view addSubview:self.contentScrollView];
+    self.contentScrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.selectorDataArray.count, self.contentScrollView.frame.size.height);
+
     for (int i = 0; i < self.selectorDataArray.count; i++) {
         NSString *str = self.selectorDataArray[i];
         UIViewController *vc = [[UIViewController alloc]init];
@@ -51,21 +55,13 @@
         }
     }
     
-    [self.view addSubview:self.selectorView];
-    [self.view addSubview:self.contentScrollView];
-    self.contentScrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.selectorDataArray.count, self.contentScrollView.frame.size.height);
+    self.selectorView.selectedIndex = 0;
     
     __weak typeof(self) weakSelf = self;
     self.selectorView.XXSelectorViewBlcok = ^(NSInteger tag) {
         NSLog(@"%ld",tag);
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            CGPoint contentOffset = weakSelf.contentScrollView.contentOffset;
-//            contentOffset.x = tag *weakSelf.view.frame.size.width;
-//            
-//            [weakSelf.contentScrollView setContentOffset:contentOffset animated:YES];
-//            weakSelf.title = weakSelf.selectorDataArray[tag];
-//        });
-       
+            [weakSelf.contentScrollView setContentOffset:CGPointMake(tag *weakSelf.view.frame.size.width,0) animated:YES];
+            weakSelf.title = weakSelf.selectorDataArray[tag];
     };
 }
 
@@ -78,7 +74,6 @@
     NSInteger page = currentOffset.x / self.view.frame.size.width;
 
     self.selectorView.selectedIndex = page;
-    
 }
 
 #pragma mark lazy
@@ -101,6 +96,7 @@
         _contentScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 64 + self.selectorView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - 64 - self.selectorView.frame.size.height)];
         _contentScrollView.delegate = self;
         _contentScrollView.pagingEnabled = YES;
+        _contentScrollView.bounces = YES;
     }
     return _contentScrollView;
 }
@@ -113,7 +109,6 @@
         _selectorView.selectorColor = [UIColor redColor];
         _selectorView.lineViewColor = [UIColor redColor];
         _selectorView.buttonColor = [UIColor cyanColor];
-//        _selectorView.isLineView = NO;
     }
     return _selectorView;
 }
